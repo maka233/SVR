@@ -1,0 +1,11 @@
+df = pd.read_excel("未来预测2022-2040.xlsx")
+X_future = df[['P', 'U', 'PGDP', 'E', 'PT', 'FT', 'CI']]
+X_future_std = scaler_x.fit_transform(X_future)
+
+# 预测
+y_future = []
+for i in range(len(X_future_std)):
+    yn = model.predict(X_future_std[i].reshape(1,-1))
+    yn = scaler_y.inverse_transform(yn.reshape(-1,1))
+    y_future.append(yn)
+np.hstack(y_future)
