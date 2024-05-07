@@ -1,0 +1,68 @@
+## 模型预测
+## 导入测试集
+test = pd.read_excel("your_file_way.xlsx") 
+X_test = test[['P', 'U', 'PGDP', 'E', 'PT', 'FT', 'CI']]
+y_test = test['TE']
+
+from sklearn.preprocessing import StandardScaler
+# 做预测
+X_std = scaler_x.transform(X_test) # 将预测集标准化，以便于输入模型
+#print(X_std)
+
+# 进行预测
+y_test_pred = []
+for i in range(len(X_std)):
+    y0 = model.predict(X_std[i].reshape(1,-1))
+    #print(y0)
+    y0 = scaler_y.inverse_transform(y0.reshape(-1,1))  ## 转为普通形式（原来为标准化的数据）
+    y_test_pred.append(y0)
+## 转为普通形式（原来为标准化的数据）
+y_test_pred = np.hstack(y_test_pred)[0].tolist()
+y_test_pred
+
+### 进行绘图
+import matplotlib.pyplot as plt  
+import numpy as np  
+  
+# 假设 y_pred 和 y 是长度为 25 的一维数组，分别代表1997年至2021年的预测值和真实值  
+# 示例数据（请替换为您的实际数据）  
+years = np.arange(1997, 2022)  # 年份  
+y1 = np.hstack(y_pred)
+y2 = data['TE'].values
+
+print(y1)
+print(y2)
+
+# 创建画布和坐标轴  
+plt.figure(figsize=(10, 6))  # 设置画布大小  
+ax = plt.gca()  # 获取当前坐标轴  
+  
+# 设置坐标轴样式  
+ax.set_xlabel('Year')  # 设置横坐标标签  
+ax.set_ylabel('TE')  # 设置纵坐标标签  
+#ax.grid(True, linestyle='--', color='0.75')  # 添加网格背景  
+ax.spines['right'].set_visible(False)  # 去掉右边边框  
+ax.spines['top'].set_visible(False)  # 去掉上边边框  
+  
+# 设置暖色调背景  
+#plt.style.use('seaborn-warmwhite')  
+  
+# 绘制预测值的折线图，使用空心圆圈和浅红色实线  
+plt.plot(years, y1[0], 'o-', color='lightcoral', label='Predicted')  
+  
+# 绘制真实值的折线图，使用实心三角形和浅蓝色虚线  
+plt.plot(years, y2, '^--', color='lightblue', label='Actual')  
+
+# 设置图例  
+plt.legend()  
+
+# 设置横坐标的刻度位置和标签  
+plt.xticks(years)  # 设置刻度位置为1997年至2021年的每个年份  
+plt.tick_params(axis='x', rotation=45)  # 如果年份标签太密集，可以旋转它们以更好地显示
+  
+
+fig=plt.gcf()
+# 显示图像  
+plt.show()
+# 保存图像到文件  
+fig.savefig('save_way/predicted_vs_actual.png', dpi=1100)  # dpi参数决定了图像的分辨率
